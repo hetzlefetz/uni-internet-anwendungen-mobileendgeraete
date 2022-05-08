@@ -24,9 +24,9 @@ const switchView = async () => {
         await setTimeout(() => {
             list.classList.remove("visible");
             if (list.classList.contains("grid")) {
-                btn.children[0].src = "../assets/glyphicons-115-list.png"
+                btn.children[0].src = "./assets/glyphicons-115-list.png"
             } else {
-                btn.children[0].src = "../assets/glyphicons-157-show-thumbnails.png"
+                btn.children[0].src = "./assets/glyphicons-157-show-thumbnails.png"
             }
         }, 1000)
     }, 2000)
