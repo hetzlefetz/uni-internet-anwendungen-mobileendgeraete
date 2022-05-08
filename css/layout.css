@@ -19,15 +19,19 @@
 }
 
 @media only screen and (max-width: 600px) {
-   :root{
-    --app-dim-listitem-height: 256px;
-   } 
+    :root {
+        --app-dim-listitem-height: 256px;
+    }
 }
 
 body {
-    height: 100vh;
-    width: 100vw;
+    min-height: 100%;
+    min-height: -webkit-fill-available;
     overflow: hidden;
+}
+
+html {
+    height: -webkit-fill-available;
 }
 
 header {
