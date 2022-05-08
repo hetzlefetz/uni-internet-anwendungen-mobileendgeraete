@@ -109,12 +109,14 @@ main {
 
 .list-item {
     height: var(--app-dim-listitem-height);
+    max-height: var(--app-dim-listitem-height);
+    min-height: var(--app-dim-listitem-height);
     display: flex;
     flex-direction: row;
     gap: 8px;
     box-sizing: content-box;
     border-bottom: 1px solid grey;
-    padding: 0px 8px;
+    padding: 8px;
     justify-content: flex-start;
     align-items: center;
     color: grey;
@@ -152,9 +154,9 @@ main {
 }
 
 .cover {
-    padding: 8px 0;
     height: calc(var(--app-dim-listitem-height));
     width: calc(var(--app-dim-listitem-height));
+    object-fit: cover;
 
 }
 
@@ -180,7 +182,7 @@ main {
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 8px 0;
+ 
 }
 
 .bottom {
@@ -233,4 +235,7 @@ main {
 
 .list-item:first-of-type {
     border-top: 2px solid grey;
+}
+.list.grid>.list-item:first-of-type{
+    border-top: none
 }
