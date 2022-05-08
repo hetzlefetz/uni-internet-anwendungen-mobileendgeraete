@@ -35,20 +35,38 @@ const switchView = async () => {
 const listItemClick = (ev) => {
     alert(ev.target.closest("div.list-item").querySelector(".primary-text").textContent)
 }
-const optionClick = (ev) => {
+const optionClick = async (ev) => {
     const url = ev.target.closest("div.list-item").querySelector(".cover").src;
     const title = ev.target.closest("div.list-item").querySelector(".primary-text").textContent;
-    alert(`${url}\n${title}`)
+    const item = ev.target.closest("div.list-item");
+
+    const index = [...item.parentElement.children].indexOf(item);
+
+    if (confirm(`${url}\n${title}\n`)) {
+        listData.splice(index, 1)
+    }
+    await fillList();
     ev.preventDefault();
     ev.stopPropagation();
 }
-const refreshClick = async ()=>{
+const refreshClick = async () => {
     await refetchListData();
     console.log("uhuh")
+}
+const addClick = async () => {
+    listData.push({
+        title: "Some Title",
+        src: "https://placekitten.com/200/150",
+        numOfTags: Math.floor(Math.random() * 100),
+        added: (new Date()).toLocaleDateString(),
+        owner: "placekitten.com"
+    })
+    await fillList();
 }
 const attachHandlers = () => {
     document.getElementById("btn-viewSwitch").onclick = switchView
     document.getElementById("btn-reload").onclick = refreshClick
+    document.getElementById("btn-add").onclick = addClick
 
 }
 
