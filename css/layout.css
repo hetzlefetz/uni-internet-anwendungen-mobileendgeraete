@@ -18,6 +18,12 @@
     color: var(--app-color-text);
 }
 
+@media only screen and (max-width: 600px) {
+   :root{
+    --app-dim-listitem-height: 256px;
+   } 
+}
+
 body {
     height: 100vh;
     width: 100vw;
@@ -86,10 +92,10 @@ main {
 .list.grid {
     overflow-y: scroll;
     max-height: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-basis: var(--app-dim-listitem-height);
-    flex-flow: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--app-dim-listitem-height), 1fr));
+    grid-template-rows: repeat(auto-fit, minmax(var(--app-dim-listitem-height), 1fr));
+    grid-gap: 8px;
 
 }
 
@@ -126,14 +132,9 @@ main {
 .list.grid>.list-item {
     border-bottom: 0;
     flex: 0 1 var(--app-dim-listitem-height);
+    justify-content: center;
 }
 
-@media only screen and (max-width: 600px) {
-    .list.grid>.list-item {
-        border-bottom: 0;
-        flex: 0 1 calc(2 * var(--app-dim-listitem-height));
-    }
-}
 
 
 
@@ -154,24 +155,13 @@ main {
 }
 
 .cover {
-    height: calc(var(--app-dim-listitem-height));
-    width: calc(var(--app-dim-listitem-height));
+    height: var(--app-dim-listitem-height);
+    width: var(--app-dim-listitem-height);
     object-fit: cover;
 
 }
 
-@media only screen and (max-width: 600px) {
-    .list.grid>.list-item {
-        border-bottom: 0;
-        flex: 0 1 calc(2 * var(--app-dim-listitem-height));
-        height: calc(2 * var(--app-dim-listitem-height));
-    }
-
-    .list.grid .cover {
-        height: calc(2 * var(--app-dim-listitem-height));
-        width: calc(2 * var(--app-dim-listitem-height));
-    }
-}
+@media only screen and (max-width: 600px) {}
 
 .center {
     justify-content: center;
@@ -182,7 +172,7 @@ main {
     display: flex;
     flex-direction: column;
     height: 100%;
- 
+
 }
 
 .bottom {
@@ -215,8 +205,8 @@ main {
 }
 
 .inline-img-m {
-    max-height: calc(var(--app-dim-font-m));
-    max-width: calc(var(--app-dim-font-m));
+    max-height: var(--app-dim-font-m);
+    max-width: var(--app-dim-font-m);
     filter: invert(60%);
     -webkit-filter: invert(60%);
     display: inline;
@@ -224,6 +214,7 @@ main {
 
 .cover-wrapper {
     position: relative;
+    height: var(--app-dim-listitem-height);
 }
 
 .overlay-bottom-right {
@@ -236,6 +227,7 @@ main {
 .list-item:first-of-type {
     border-top: 2px solid grey;
 }
-.list.grid>.list-item:first-of-type{
+
+.list.grid>.list-item:first-of-type {
     border-top: none
 }
