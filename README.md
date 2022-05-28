@@ -1,1 +1,1 @@
-Root ordner auf beliebiger Adresse Serven  (zb `npm-serve .`). Sonst geht das JSON abholen nicht.
+Root Ordner auf beliebiger Adresse Serven  (zb `npm-serve .`). Sonst geht das JSON abholen nicht.
