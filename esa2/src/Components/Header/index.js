@@ -1,0 +1,118 @@
+import React from "react";
+
+import { Bar } from "../Bar";
+import AddIcon from "@mui/icons-material/Add";
+import MenuIcon from "@mui/icons-material/Menu";
+import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+import Button from "@mui/material/Button";
+import Avatar from "@mui/material/Avatar";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import PersonIcon from "@mui/icons-material/Person";
+import Typography from "@mui/material/Typography";
+import { blue } from "@mui/material/colors";
+
+const emails = ["username@gmail.com", "user02@gmail.com"];
+
+const MenuHeading = styled.h1`
+  margin: 0;
+  padding: 0;
+`;
+
+export const Header = () => {
+  const [open, setOpen] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value) => {
+    setOpen(false);
+    setSelectedValue(value);
+  };
+
+  const left = [
+    <Bar.Button
+      key={"btn-menu"}
+      onclick={() => {
+        console.log("Menu click");
+      }}
+      icon={<MenuIcon key={"1"} />}
+    />,
+    <MenuHeading key={"1"}>Menü</MenuHeading>,
+  ];
+  const right = [
+    <Bar.Button
+      key={"btn-add"}
+      onclick={() => {
+        console.log("Add click");
+        handleClickOpen();
+      }}
+      icon={<AddIcon key={"1"} />}
+    />,
+  ];
+  return (
+    <>
+      <Bar
+        key={"1"}
+        left={left}
+        right={right}
+        border={css`
+          border-bottom: 1px solid grey;
+        `}
+      />
+    </>
+  );
+};
+
+function SimpleDialog(props) {
+  const { onClose, selectedValue, open } = props;
+
+  const handleClose = () => {
+    onClose(selectedValue);
+  };
+
+  const handleListItemClick = (value) => {
+    onClose(value);
+  };
+
+  return (
+    <Dialog onClose={handleClose} open={open}>
+      <DialogTitle>Set backup account</DialogTitle>
+      <List sx={{ pt: 0 }}>
+        {emails.map((email) => (
+          <ListItem
+            button
+            onClick={() => handleListItemClick(email)}
+            key={email}
+          >
+            <ListItemAvatar>
+              <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
+                <PersonIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={email} />
+          </ListItem>
+        ))}
+        <ListItem
+          autoFocus
+          button
+          onClick={() => handleListItemClick("addAccount")}
+        >
+          <ListItemAvatar>
+            <Avatar>
+              <AddIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary="Add account" />
+        </ListItem>
+      </List>
+    </Dialog>
+  );
+}
