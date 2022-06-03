@@ -38,7 +38,8 @@ const InfoItem = styled.div`
   }
 `;
 
-export const ListItem = ({ title, src, creationDate }) => {
+export const ListItem = (props) => {
+  const { title, src, creationDate, optionClick } = props;
   return (
     <Row>
       <ImageItem key={"1"} src={src} />
@@ -53,10 +54,8 @@ export const ListItem = ({ title, src, creationDate }) => {
         </p>
       </InfoItem>
       <Bar.Button
-        key={"btn-cache-click"}
-        onclick={() => {
-          console.log("Cache click");
-        }}
+        key={"btn-options-click"}
+        onclick={optionClick}
         icon={<MoreVertIcon />}
       />
       ,

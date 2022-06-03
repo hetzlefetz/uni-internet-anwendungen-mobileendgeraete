@@ -1,6 +1,6 @@
 
 import { DB_CONSTS } from "./constants.ts";
-import { openDB, DBSchema, IDBPDatabase } from 'idb';
+import { openDB, DBSchema } from 'idb';
 import { CrudOperations, MediaItem } from "../../Types/types";
 
 interface MediaItemDb extends DBSchema {
@@ -11,21 +11,18 @@ interface MediaItemDb extends DBSchema {
 }
 const db = openDB<MediaItemDb>(DB_CONSTS.NAME, DB_CONSTS.VERSION, {
   upgrade: (db) => {
-    db.createObjectStore("mediaItems", { keyPath: "id" });
+    db.createObjectStore("mediaItems");
   }
 });
 
 const createIndexedDb = async (item: MediaItem) => {
-  return (await db).put("mediaItems", item, item.id);
+  return (await db).add("mediaItems", item, item.id);
 
 };
 
 const readIndexedDb = async (id?: string) => {
-  var result = [];
   if (id) {
-    var tmp = await (await db).get("mediaItems", id);
-    result.push(tmp)
-    return result;
+    return (await db).get("mediaItems", id);
   } else {
     return (await db).getAll("mediaItems");
   }
@@ -37,7 +34,6 @@ const updateIndexedDb = async (item: MediaItem) => {
 
 const deleteIndexedDb = async (id?: string) => {
   if (id) {
-
     return (await db).delete("mediaItems", id);
   } else {
     return (await db).clear("mediaItems");

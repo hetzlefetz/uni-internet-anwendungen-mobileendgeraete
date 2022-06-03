@@ -3,6 +3,8 @@ import styled from "@emotion/styled";
 import { Header } from "./Components/Header";
 import { Footer } from "./Components/Footer";
 import { List } from "./Components/List";
+import { useMediaItemStore } from "./Store/store.ts";
+import { useEffect, useState } from "react";
 
 const AppContainer = styled.div`
   height: 100vh;
@@ -11,11 +13,20 @@ const AppContainer = styled.div`
 `;
 
 function App() {
-  console.log("Hello");
+  const { initialize } = useMediaItemStore();
+  const [isLoading, setIsLoading] = useState(true);
+  const initializeStore = async () => {
+    await initialize();
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    initializeStore();
+  }, []);
   return (
     <AppContainer>
       <Header />
-      <List />
+      {isLoading && <div>Loading data...</div>}
+      {!isLoading && <List />}
       <Footer />
     </AppContainer>
   );

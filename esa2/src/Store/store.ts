@@ -1,7 +1,7 @@
 import React from "react";
 import create from "zustand";
 import shallow from "zustand/shallow";
-import { MediaItem, MediaItemSource } from "../Types/types";
+import { MediaItem, MediaItemSource, MediaItemStore } from "../Types/types";
 import { crudOperations as lc } from "./local/index.ts"
 import { crudOperations as rc } from "./remote/index.ts"
 
@@ -14,18 +14,7 @@ const updateItemInStates = (item: MediaItem, state: MediaItemStore): MediaItemSt
   }
   return state;
 }
-export type StorageType = "local" | "remote"
 
-export type MediaItemStore = {
-  source: StorageType;
-  items: MediaItem[];
-  read: (id: string) => Promise<MediaItem>;
-  readAll: () => Promise<MediaItem[]>;
-  create: (item: MediaItem) => void;
-  destroy: (id: string) => void;
-  reset: () => void;
-  update: (item: MediaItem) => void;
-};
 
 
 
@@ -34,9 +23,21 @@ export const useMediaItemStore = create<MediaItemStore>(
     items: [],
     source: "local",
     switchSource: () => set((state) => ({ source: state.source === "local" ? "remote" : "local" })),
+    initialize: async () => {
+      var fromDB = await dbRead(get().source);
+      console.log("Initializing store ...")
+      set((state) => {
+        if (state.items.length !== fromDB.length) {
+          return {
+            items: fromDB,
+          }
+        }
+        return state;
+      })
+    },
     read: async (id: string) => {
       var fromStore = get().items.find((x) => x.id === id);
-      var fromDB = await dbRead("local", id);
+      var fromDB = await dbRead(get().source, id);
       if (JSON.stringify(fromStore) !== JSON.stringify(fromDB)) {
         console.error("DB and Store missmatch !?");
       }
@@ -44,7 +45,7 @@ export const useMediaItemStore = create<MediaItemStore>(
     },
     readAll: async () => {
       var fromStore = get().items;
-      var fromDB = await dbRead("local");
+      var fromDB = await dbRead(get().source);
       ////////////////////////
       // HIER HIER HIER
       ////////////////////////
@@ -54,7 +55,7 @@ export const useMediaItemStore = create<MediaItemStore>(
       return fromStore;
     },
     create: async (item: MediaItem) => {
-      await dbCreate(item, "local");
+      await dbCreate(item, get().source);
       set((state) => {
         return {
           items: [...state.items, item],
@@ -62,7 +63,7 @@ export const useMediaItemStore = create<MediaItemStore>(
       })
     },
     reset: async () => {
-      await dbDelete("local");
+      await dbDelete(get().source);
       set(() => {
         return {
           items: [],
@@ -70,7 +71,7 @@ export const useMediaItemStore = create<MediaItemStore>(
       });
     },
     destroy: async (id: string) => {
-      await dbDelete("local", id)
+      await dbDelete(get().source, id)
       set((state: MediaItemStore) => {
         return {
           items: state.items.filter((x) => x.id !== id),
@@ -78,7 +79,7 @@ export const useMediaItemStore = create<MediaItemStore>(
       });
     },
     update: async (item: MediaItem) => {
-      await dbUpdate(item, "local");
+      await dbUpdate(item, get().source);
       set((state: MediaItemStore) => {
         return updateItemInStates(item, state);
       });
@@ -89,12 +90,14 @@ export const useMediaItemStore = create<MediaItemStore>(
 
 const dbCreate = async (item: MediaItem, state: MediaItemSource) => {
   if (state === "local") {
+    //Id is generated serverside, simulated for lc
+    item.id = "" + new Date().getTime();
     return lc.create(item);
   }
   return rc.create(item);
 }
 
-const dbRead = async (source: MediaItemSource, id?: string) => {
+const dbRead: Promise<MediaItem[]> = async (source: MediaItemSource, id?: string) => {
   if (source === "local") {
     return lc.read(id);
   }

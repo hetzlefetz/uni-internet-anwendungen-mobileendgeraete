@@ -1,19 +1,43 @@
 import { CrudOperations, MediaItem } from "../../Types/types";
-import { REMOTE_HOST } from "./constants.ts";
+
 import axios from 'axios';
 
 
 
+const ConnectionSettings = {
+  host: "http://localhost",
+  port: "8001",
+  apiEndpoint: "mediaitems"
+}
+
+const apiUrl = `${ConnectionSettings.host}:${ConnectionSettings.port}/${ConnectionSettings.apiEndpoint}`
+
 const createRest = async (item: MediaItem) => {
-  const response = await axios.post(`${REMOTE_HOST}/create`)
-  return response.data;
+  if (item.id) {
+    throw new Error("Cant create with id");
+  }
+  const response = await axios.post(`${apiUrl}`, item)
+  return response.data.data;
 };
 
-const readRest = (id?: string) => { };
+const readRest = async (id?: string) => {
+  if (id) {
+    const response = await axios.get(`${apiUrl}/${id}`);
+    return response.data.data;
+  }
+  const response = await axios.get(`${apiUrl}`);
+  return response.data.data;
+};
 
-const updateRest = (item: MediaItem) => { };
+const updateRest = async (item: MediaItem) => {
+  const response = await axios.put(`${apiUrl}`, item)
+  return response.data.data;
+};
 
-const deleteRest = (id?: string) => { };
+const deleteRest = async (id?: string) => {
+  const response = await axios.delete(`${apiUrl}/${id}`);
+  return response.data.data;
+};
 
 let crudOperations: CrudOperations
 crudOperations = {
