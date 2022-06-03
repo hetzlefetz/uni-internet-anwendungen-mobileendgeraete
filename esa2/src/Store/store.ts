@@ -22,7 +22,16 @@ export const useMediaItemStore = create<MediaItemStore>(
   (set, get) => ({
     items: [],
     source: "local",
-    switchSource: () => set((state) => ({ source: state.source === "local" ? "remote" : "local" })),
+    switchSource: async () => {
+      var newNewSource = get().source === "local" ? "remote" : "local";
+      var fromDb = await dbRead(newNewSource);
+      set(() => {
+        return {
+          source: newNewSource,
+          items: fromDb
+        }
+      });
+    },
     initialize: async () => {
       var fromDB = await dbRead(get().source);
       console.log("Initializing store ...")
@@ -55,10 +64,10 @@ export const useMediaItemStore = create<MediaItemStore>(
       return fromStore;
     },
     create: async (item: MediaItem) => {
-      await dbCreate(item, get().source);
+      var result = await dbCreate(item, get().source);
       set((state) => {
         return {
-          items: [...state.items, item],
+          items: [...state.items, result ? result : item],
         }
       })
     },

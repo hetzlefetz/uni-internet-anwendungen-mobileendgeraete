@@ -12,6 +12,7 @@ const Row = styled.div`
   width: 100%;
   gap: 8px;
   border-bottom: 1px grey;
+  cursor: pointer;
 `;
 const ImageItem = styled.img`
   object-fit: cover;
@@ -38,10 +39,15 @@ const InfoItem = styled.div`
   }
 `;
 
-export const ListItem = (props) => {
-  const { title, src, creationDate, optionClick } = props;
+export const ListItem = ({
+  title,
+  src,
+  creationDate,
+  optionClick,
+  itemClick,
+}) => {
   return (
-    <Row>
+    <Row onClick={itemClick}>
       <ImageItem key={"1"} src={src} />
       <InfoItem key={"2"}>
         <h2>{title}</h2>
@@ -55,10 +61,12 @@ export const ListItem = (props) => {
       </InfoItem>
       <Bar.Button
         key={"btn-options-click"}
-        onclick={optionClick}
+        onclick={(ev) => {
+          ev.stopPropagation();
+          optionClick();
+        }}
         icon={<MoreVertIcon />}
       />
-      ,
     </Row>
   );
 };

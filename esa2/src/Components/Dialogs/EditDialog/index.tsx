@@ -45,8 +45,12 @@ export const EditDialog = ({
         <Button onClick={onClose}>Cancel</Button>
         <Button
           onClick={() => {
-            item.title = value;
-            onConfirm(item);
+            if (item) {
+              item.title = value;
+              onConfirm(item); //For Edit
+            } else {
+              onConfirm(value); //For Add
+            }
           }}
         >
           {item ? "Ändern" : "Hinzufügen"}

@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import { Bar } from "../Bar";
 import AddIcon from "@mui/icons-material/Add";
 import MenuIcon from "@mui/icons-material/Menu";
+import DeleteIcon from "@mui/icons-material/Delete";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { EditDialog } from "../Dialogs/index.ts";
 import { useMediaItemStore } from "../../Store/store.ts";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const MenuHeading = styled.h1`
   margin: 0;
@@ -14,8 +16,16 @@ const MenuHeading = styled.h1`
 `;
 
 export const Header = () => {
+  const location = useLocation();
   const [open, setOpen] = useState(false);
-  const { create } = useMediaItemStore();
+  const { create, items, destroy } = useMediaItemStore();
+  const navigate = useNavigate();
+  let item = null;
+  if (location.pathname.includes("/read/")) {
+    const id = location.pathname.split("/").pop();
+    item = items.find((x) => x.id === id);
+  }
+
   const handleAdd = async (title) => {
     var newItem = {
       title,
@@ -33,17 +43,33 @@ export const Header = () => {
       }}
       icon={<MenuIcon key={"1"} />}
     />,
-    <MenuHeading key={"1"}>Menü</MenuHeading>,
+    <MenuHeading key={"1"}>{item ? item.title : "Menü"}</MenuHeading>,
   ];
-  const right = [
+  const addButton = (
     <Bar.Button
       key={"btn-add"}
       onclick={() => {
         setOpen(true);
       }}
       icon={<AddIcon key={"1"} />}
-    />,
-  ];
+    />
+  );
+  const deleteButton = (
+    <Bar.Button
+      key={"btn-delete"}
+      onclick={() => {
+        destroy(item.id);
+        navigate(-1);
+      }}
+      icon={<DeleteIcon key={"1"} />}
+    />
+  );
+  const right = [];
+  if (location.pathname.includes("/read/")) {
+    right.push(deleteButton);
+  } else {
+    right.push(addButton);
+  }
   return (
     <>
       <Bar

@@ -4,7 +4,8 @@ import { Header } from "./Components/Header";
 import { Footer } from "./Components/Footer";
 import { List } from "./Components/List";
 import { useMediaItemStore } from "./Store/store.ts";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { BrowserRouter } from "react-router-dom";
 
 const AppContainer = styled.div`
   height: 100vh;
@@ -14,6 +15,7 @@ const AppContainer = styled.div`
 
 function App() {
   const { initialize } = useMediaItemStore();
+
   const [isLoading, setIsLoading] = useState(true);
   const initializeStore = async () => {
     await initialize();
